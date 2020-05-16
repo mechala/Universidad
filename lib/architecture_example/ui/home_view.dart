@@ -101,6 +101,7 @@ class _CourseListViewState extends State<CourseListView>
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
+                              //aquí iría el ListView en mi opinión con el model.courses que es la lista de cursos
                               Center(child: Text('${model.courses.length}')),
                               FlatButton(
                                   child: Text('get Detail'),
@@ -129,7 +130,7 @@ class _CourseListViewState extends State<CourseListView>
       );
     } catch (e) {
       print("Error getting details: $e");
-      await _buildDialog(context, 'Alert', 'Need to login');
+      await _buildDialog(context, 'Alert',"$e" );
       Provider.of<AuthProvider>(context, listen: false).setLogOut();
     }
   }
@@ -238,22 +239,7 @@ class _StudentsListViewState extends State<StudentsListView>
     }
   }
 
-  /* Widget floating(BuildContext context, HomeModel model) {
-    return FloatingActionButton(
-        onPressed: () => _onAdd(context, model),
-        tooltip: 'Add task',
-        child: new Icon(Icons.add));
-  } */
 
-/*   void _onAdd(BuildContext context, HomeModel model) async {
-    try {
-      await model.addStudent();
-    } catch (err) {
-      print('upsss ${err.toString()}');
-      await _buildDialog(context, 'Alert', 'Need to login');
-      Provider.of<AuthProvider>(context, listen: false).setLogOut();
-    }
-  } */
 
   Future<void> _buildDialog(BuildContext context, _title, _message) {
     return showDialog(
@@ -311,7 +297,10 @@ class _ProfessorsListViewState extends State<ProfessorsListView>
                             children: <Widget>[
                               Center(child: Text('${model.professors.length}')),
                               FlatButton(
-                                  child: Text('get Detail'),
+                                //Un botón que crea la view de detalles que le envias la id del professor
+                                //Le pregunta a la api por el profesor y te da un objeto PERSON que puedes usar en la vista de detalles para mostrarlos
+                                //Todos los getDetails funcionan igual, solo que con el id respectivo
+                                  child: Text('Get Detail'),
                                   onPressed: () => getDetail(
                                       context, model.professors[0].id))
                             ],
