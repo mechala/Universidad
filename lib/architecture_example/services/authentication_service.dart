@@ -16,7 +16,7 @@ class AuthenticationService {
     var hasUser = fetchedUser != null;
     if(hasUser) {
       print('Got user token ${fetchedUser.token}');
-      //userController.add(fetchedUser);
+    
       user = fetchedUser;
     }
 

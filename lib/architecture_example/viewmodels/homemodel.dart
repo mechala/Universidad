@@ -60,16 +60,19 @@ class HomeModel extends BaseModel {
 
    
   }
-  Future addStudent() async {
+  Future addCourse() async {
     setState(ViewState.Busy);
-  try {
-      await _studentService.addStudent();
+    try {
+      await _couseService.addCourse();
       setState(ViewState.Idle);
       return Future.value(true);
     } catch (err) {
-      print('homemodel addCourse ${err.toString()}');
+      print('homemodel getStudent ${err.toString()}');
        setState(ViewState.Idle);
       return Future.error(err.toString());
     }
+
+   
   }
+
 }

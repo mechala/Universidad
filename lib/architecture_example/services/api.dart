@@ -207,26 +207,24 @@ Future<List<Person>> getProfessors(String username, String token) async {
     }
   }
 
-  Future<Person> addStudentService(String username, String token) async {
-    final http.Response response = await http.post(
-      baseUrl + '/' + username + '/students',
+  Future<Person> addStudentService(String username, String token,int courseId) async {
+     final http.Response response = await http.post(
+      'https://movil-api.herokuapp.com/$username/students',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        HttpHeaders.authorizationHeader: "Bearer " + token,
+         HttpHeaders.authorizationHeader: "Bearer " + token,
       },
+      body: jsonEncode(<String, int>{
+        'courseId':courseId,
+      }),
     );
-    print('token $token');
-    print('${response.statusCode}');
-    print('$response');
+    // print('${response.body}');
+    // print('${response.statusCode}');
     if (response.statusCode == 200) {
-      // print('${response.body}');
       return Person.fromJson(json.decode(response.body));
     } else {
-      //throw Exception('Failed to register user');
       Map<String, dynamic> body = json.decode(response.body);
-      String error = body['error'];
-      print('error  $error');
-      return Future.error(error);
+      return Future.error(body['error']);
     }
   }
 

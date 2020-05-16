@@ -70,8 +70,7 @@ class LoginView extends StatelessWidget {
                                               .validate()) {
                                             // If the form is valid, display a Snackbar.
 
-                                            var loginSuccess = await model
-                                                .login(email, password);
+                                            var loginSuccess=await model.login(email, password)??false;
                                             if (loginSuccess) {
                                               print(
                                                   'LoginView loginSuccess setting up setLoggedIn ');

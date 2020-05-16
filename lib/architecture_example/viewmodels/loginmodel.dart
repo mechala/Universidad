@@ -10,10 +10,19 @@ class LoginModel extends BaseModel {
   User get user => _authenticationService.user;
  
   Future<bool> login(String email,String password) async {
-    setState(ViewState.Busy);
+    try {
+        setState(ViewState.Busy);
+
     var success = await _authenticationService.login(email,password);
     notifyListeners();
     setState(ViewState.Idle);
     return success;
+    } catch (e) {
+
+       print("Error loging in details: $e");
+       setState(ViewState.Idle);
+     
+    }
+  
   }
 }

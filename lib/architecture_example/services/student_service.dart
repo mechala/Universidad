@@ -22,9 +22,9 @@ class StudentService {
     }
   }
 
-  Future addStudent() async {
+  Future addStudent(int courseId) async {
     try {
-      Person student = await _api.addStudentService(_user, _token);
+      Person student = await _api.addStudentService(_user, _token,courseId);
       _students.add(student);
     } catch (err) {
       print('service addCourse ${err.toString()}');
