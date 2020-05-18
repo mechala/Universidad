@@ -1,5 +1,8 @@
 import 'package:f_202010_provider_get_it/architecture_example/base/base_model.dart';
 import 'package:f_202010_provider_get_it/architecture_example/base/base_view.dart';
+import 'package:f_202010_provider_get_it/architecture_example/models/person.dart';
+import 'package:f_202010_provider_get_it/architecture_example/ui/components/course_detail_card.dart';
+import 'package:f_202010_provider_get_it/architecture_example/ui/components/person_card.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/auth_provider.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/coursedetailmodel.dart';
 import 'package:f_202010_provider_get_it/architecture_example/ui/student_detail.dart';
@@ -20,42 +23,134 @@ class CourseDetailView extends StatelessWidget {
             appBar: AppBar(
               title: Text("Course detail"),
             ),
-            floatingActionButton: floating(context, model,courseId),
+            floatingActionButton:
+                floating(context, model, courseId),
             body: model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
-                : Center(
-                    child: model.courseDetail == null
-                        ? Text('No data')
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Center(
-                                  child: Text(
-                                      'Course: ${model.courseDetail.name}')),
-                              Center(
-                                  child: Text(
-                                      'Professor: ${model.courseDetail.professor.name}')),
-                              Center(
-                                child: FlatButton(
-                                    child: Text(
-                                        'Student #1: ${model.courseDetail.students[0].name}'),
-                                    onPressed: () async {
-                                      print("Vamoa a buscar al estudiante");
+                : Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Column(
+                      children: <Widget>[
+                        _renderHead(
+                            context,
+                            model.courseDetail.name,
+                            model.courseDetail.professor.name,
+                            model.courseDetail.professor.username,
+                            model.courseDetail.professor.email),
+                        /* Expanded(
+                          child: */
+                        _renderBody(context, model.courseDetail.students),
+                        /* ) */
+                      ],
+                    ))));
+  }
 
-                                      getDetail(
-                                          //Aquí le mandas el id del estudiante y el método llama a la Api y devuelve un PERSON con los datos del estudiante
-                                          //Posteriormente te crea una vista de student_details donde tienes acceso a toda su información
-                                          context,
-                                          model.courseDetail.students[0].id);
-                                    }),
-                              ),
-                            ],
-                          ))));
+  Widget _renderHead(BuildContext context, String course, String name,
+      String username, String email) {
+    return Container(
+        margin: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+        padding: EdgeInsets.all(8.0),
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            color: Colors.redAccent[400],
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            )),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              course,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3.0),
+                  child: Icon(
+                    Icons.book,
+                    size: 80,
+                    color: Colors.white,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Text(
+                      name,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      username,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      email,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ));
+  }
+
+  Widget _renderBody(BuildContext context, List<Person> students) {
+    return Container(
+        padding: EdgeInsets.all(8.0),
+        margin: EdgeInsets.symmetric(horizontal: 16.0),
+        color: Colors.red,
+        child: SizedBox(
+            height: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                SizedBox(height: 10),
+                Text(
+                  'students'.toUpperCase(),
+                  style: TextStyle(color: Colors.grey[800], fontSize: 14),
+                ),
+                SizedBox(height: 3),
+                SizedBox(
+                  height: 200,
+                  child: ListView(
+                      children: students.map((student) {
+                    PersonCard(
+                      name: student.name,
+                      userName: student.username,
+                      email: student.email,
+                      getPersonDetail: () => getDetail(context, student.id),
+                    );
+                  }).toList()),
+                )
+              ],
+            )));
   }
 }
 
 Widget floating(BuildContext context, CourseDetailModel model, int courseId) {
-  
   return FloatingActionButton(
       onPressed: () => _onAdd(context, model, courseId),
       tooltip: 'Add task',
@@ -63,13 +158,14 @@ Widget floating(BuildContext context, CourseDetailModel model, int courseId) {
 }
 
 void _onAdd(BuildContext context, CourseDetailModel model, int courseId) async {
+  print("El id del curso es: $courseId");
   try {
     await model.addStudent(courseId);
   } catch (err) {
     print('upsss ${err.toString()}');
-    await _buildDialog(context, 'Alert', 'Need to login');
-    Provider.of<AuthProvider>(context, listen: false).setLogOut();
-    Navigator.of(context).pop();
+   // await _buildDialog(context, 'Alert', 'Need to login');
+    //Provider.of<AuthProvider>(context, listen: false).setLogOut();
+    //Navigator.of(context).pop();
   }
 }
 

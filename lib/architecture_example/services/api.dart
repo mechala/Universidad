@@ -218,8 +218,8 @@ Future<List<Person>> getProfessors(String username, String token) async {
         'courseId':courseId,
       }),
     );
-    // print('${response.body}');
-    // print('${response.statusCode}');
+    print('${response.body}');
+     print('${response.statusCode}');
     if (response.statusCode == 200) {
       return Person.fromJson(json.decode(response.body));
     } else {

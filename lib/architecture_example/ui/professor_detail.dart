@@ -5,7 +5,7 @@ import 'package:f_202010_provider_get_it/architecture_example/viewmodels/profess
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'components/person_detail.dart';
+import 'components/person_detail_card.dart';
 
 class ProfessorDetailView extends StatelessWidget {
   final int professorId;
@@ -23,8 +23,9 @@ class ProfessorDetailView extends StatelessWidget {
             ),
             body: model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
-                : Container(
-                    child: PersonDetail(
+                : SingleChildScrollView(
+                    child: Container(
+                        child: PersonDetailCard(
                     context: context,
                     name: model.professorDetail.name,
                     username: model.professorDetail.username,
@@ -33,6 +34,6 @@ class ProfessorDetailView extends StatelessWidget {
                     city: model.professorDetail.city,
                     phone: model.professorDetail.phone,
                     birthday: model.professorDetail.birthday,
-                  ))));
+                  )))));
   }
 }
