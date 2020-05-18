@@ -2,7 +2,7 @@ import 'package:f_202010_provider_get_it/architecture_example/base/base_model.da
 import 'package:f_202010_provider_get_it/architecture_example/base/base_view.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/auth_provider.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/studentdetailmodel.dart';
-import 'components/person_detail.dart';
+import 'components/person_detail_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,7 @@ class StudentDetailView extends StatelessWidget {
             body: model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
                 : Container(
-                    child: PersonDetail(
+                    child: PersonDetailCard(
                     context: context,
                     name: model.studentDetail.name,
                     username: model.studentDetail.username,

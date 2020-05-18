@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class PersonDetail extends StatelessWidget {
+class PersonDetailCard extends StatelessWidget {
   final BuildContext context;
   final String name;
   final String username;
@@ -11,7 +11,7 @@ class PersonDetail extends StatelessWidget {
   final String phone;
   final String birthday;
 
-  PersonDetail(
+  PersonDetailCard(
       {this.context,
       this.name,
       this.username,
@@ -23,27 +23,36 @@ class PersonDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        _renderHead(context, name, username, email),
-        _renderBody(context, country, city, phone, birthday)
-      ],
-    );
+    return Card(
+        margin: EdgeInsets.all(16.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10),
+          topRight: Radius.circular(10),
+          bottomLeft: Radius.circular(5),
+          bottomRight: Radius.circular(5),
+        )),
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _renderHead(context, name, username, email),
+            _renderBody(context, country, city, phone, birthday)
+          ],
+        ));
   }
 
   Widget _renderHead(
       BuildContext context, String name, String username, String email) {
     return Container(
       padding: EdgeInsets.all(8.0),
-      margin: EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
+          color: Colors.redAccent[400],
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),
-          ),
-          color: Colors.redAccent[400]),
+          )),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
