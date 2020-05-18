@@ -5,6 +5,8 @@ import 'package:f_202010_provider_get_it/architecture_example/ui/student_detail.
 import 'package:f_202010_provider_get_it/architecture_example/ui/professor_detail.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/auth_provider.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/homemodel.dart';
+import 'components/course_card.dart';
+import 'components/person_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -98,17 +100,14 @@ class _CourseListViewState extends State<CourseListView>
                 : Center(
                     child: model.courses == null
                         ? Text('No data')
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              //aquí iría el ListView en mi opinión con el model.courses que es la lista de cursos
-                              Center(child: Text('${model.courses.length}')),
-                              FlatButton(
-                                  child: Text('get Detail'),
-                                  onPressed: () =>
-                                      getDetail(context, model.courses[0].id))
-                            ],
-                          ))));
+                        : ListView(
+                            // Se renderiza la lista de los cursos
+                            children: model.courses
+                                .map((course) => CourseCard(
+                                    course: course,
+                                    getDetails: () =>
+                                        getDetail(context, course.id)))
+                                .toList()))));
   }
 
   void getData(BuildContext context, HomeModel model) async {
@@ -130,7 +129,7 @@ class _CourseListViewState extends State<CourseListView>
       );
     } catch (e) {
       print("Error getting details: $e");
-      await _buildDialog(context, 'Alert',"$e" );
+      await _buildDialog(context, 'Alert', "$e");
       Provider.of<AuthProvider>(context, listen: false).setLogOut();
     }
   }
@@ -203,15 +202,15 @@ class _StudentsListViewState extends State<StudentsListView>
                 : Center(
                     child: model.students == null
                         ? Text('No data')
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Center(child: Text('${model.students.length}')),
-                              FlatButton(
-                                  child: Text('get Detail'),
-                                  onPressed: () =>
-                                      getDetail(context, model.students[0].id))
-                            ],
+                        : ListView(
+                            children: model.students
+                                .map((student) => PersonCard(
+                                    name: student.name,
+                                    userName: student.username,
+                                    email: student.email,
+                                    getPersonDetail: () =>
+                                        getDetail(context, student.id)))
+                                .toList(),
                           ))));
   }
 
@@ -238,8 +237,6 @@ class _StudentsListViewState extends State<StudentsListView>
       Provider.of<AuthProvider>(context, listen: false).setLogOut();
     }
   }
-
-
 
   Future<void> _buildDialog(BuildContext context, _title, _message) {
     return showDialog(
@@ -292,19 +289,20 @@ class _ProfessorsListViewState extends State<ProfessorsListView>
                 : Center(
                     child: model.professors == null
                         ? Text('No data')
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Center(child: Text('${model.professors.length}')),
-                              FlatButton(
-                                //Un botón que crea la view de detalles que le envias la id del professor
-                                //Le pregunta a la api por el profesor y te da un objeto PERSON que puedes usar en la vista de detalles para mostrarlos
-                                //Todos los getDetails funcionan igual, solo que con el id respectivo
-                                  child: Text('Get Detail'),
-                                  onPressed: () => getDetail(
-                                      context, model.professors[0].id))
-                            ],
-                          ))));
+                        : ListView(
+                            children: model.professors
+                                .map((prof) => PersonCard(
+                                    name: prof.name,
+                                    userName: prof.username,
+                                    email: prof.email,
+                                    getPersonDetail: () =>
+                                        getDetail(context, prof.id)))
+                                .toList(),
+                          )
+                    //Un botón que crea la view de detalles que le envias la id del professor
+                    //Le pregunta a la api por el profesor y te da un objeto PERSON que puedes usar en la vista de detalles para mostrarlos
+                    //Todos los getDetails funcionan igual, solo que con el id respectivo
+                    )));
   }
 
   void getData(BuildContext context, HomeModel model) async {
