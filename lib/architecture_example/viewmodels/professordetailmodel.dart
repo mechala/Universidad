@@ -12,7 +12,12 @@ class ProfessorDetailModel extends BaseModel {
   Future getProfessor(
     String user, String token, int professorId) async {
     setState(ViewState.Busy);
+    try{
     professorDetail = await _api.getProfessor(user, token, professorId);
+    }catch(e){
+    print("Error getting professor ${e.toString()}");
+    return Future.error(e.toString());
+    }
     setState(ViewState.Idle);
   }
 }

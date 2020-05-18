@@ -12,7 +12,6 @@ class CourseDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseView<CourseDetailModel>(
-      
         onModelReady: (model) => model.getCourse(
             Provider.of<AuthProvider>(context).username,
             Provider.of<AuthProvider>(context).token,
@@ -21,66 +20,78 @@ class CourseDetailView extends StatelessWidget {
             appBar: AppBar(
               title: Text("Course detail"),
             ),
-            floatingActionButton: floating(context, model,model.courseDetail.professor.id),
+            floatingActionButton: floating(context, model,courseId),
             body: model.state == ViewState.Busy
                 ? Center(child: CircularProgressIndicator())
                 : Center(
-                    child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Center(child: Text('Course: ${model.courseDetail.name}')),
-                      Center(
-                          child: Text(
-                              'Professor: ${model.courseDetail.professor.name}')),
-                      Center(
-                        child: FlatButton(
-                            child: Text(
-                                'Student #1: ${model.courseDetail.students[0].name}'),
-                            onPressed: () async {
-                              print("Vamoa a buscar al estudiante");
+                    child: model.courseDetail == null
+                        ? Text('No data')
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Center(
+                                  child: Text(
+                                      'Course: ${model.courseDetail.name}')),
+                              Center(
+                                  child: Text(
+                                      'Professor: ${model.courseDetail.professor.name}')),
+                              Center(
+                                child: FlatButton(
+                                    child: Text(
+                                        'Student #1: ${model.courseDetail.students[0].name}'),
+                                    onPressed: () async {
+                                      print("Vamoa a buscar al estudiante");
 
-                              getDetail(context, model.courseDetail.students[0].id);
-                             
-                            }),
-                      ),
-                    ],
-                  ))));
+                                      getDetail(
+                                          //Aquí le mandas el id del estudiante y el método llama a la Api y devuelve un PERSON con los datos del estudiante
+                                          //Posteriormente te crea una vista de student_details donde tienes acceso a toda su información
+                                          context,
+                                          model.courseDetail.students[0].id);
+                                    }),
+                              ),
+                            ],
+                          ))));
   }
 }
-Widget floating(BuildContext context, CourseDetailModel model,int courseId) {
-    return FloatingActionButton(
-        onPressed: () => _onAdd(context, model,courseId),
-        tooltip: 'Add task',
-        child: new Icon(Icons.add));
-  }
 
-  void _onAdd(BuildContext context, CourseDetailModel model,int courseId) async {
-    try {
-      await model.addStudent(courseId);
-    } catch (err) {
-      print('upsss ${err.toString()}');
-      await _buildDialog(context, 'Alert', 'Need to login');
-      Provider.of<AuthProvider>(context, listen: false).setLogOut();
-    }
+Widget floating(BuildContext context, CourseDetailModel model, int courseId) {
+  
+  return FloatingActionButton(
+      onPressed: () => _onAdd(context, model, courseId),
+      tooltip: 'Add task',
+      child: new Icon(Icons.add));
+}
+
+void _onAdd(BuildContext context, CourseDetailModel model, int courseId) async {
+  try {
+    await model.addStudent(courseId);
+  } catch (err) {
+    print('upsss ${err.toString()}');
+    await _buildDialog(context, 'Alert', 'Need to login');
+    Provider.of<AuthProvider>(context, listen: false).setLogOut();
+    Navigator.of(context).pop();
   }
-   Future<void> _buildDialog(BuildContext context, _title, _message) {
-    return showDialog(
-      builder: (context) {
-        return AlertDialog(
-          title: Text(_title),
-          content: Text(_message),
-          actions: <Widget>[
-            FlatButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                })
-          ],
-        );
-      },
-      context: context,
-    );
-  }
+}
+
+Future<void> _buildDialog(BuildContext context, _title, _message) {
+  return showDialog(
+    builder: (context) {
+      return AlertDialog(
+        title: Text(_title),
+        content: Text(_message),
+        actions: <Widget>[
+          FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              })
+        ],
+      );
+    },
+    context: context,
+  );
+}
+
 void getDetail(BuildContext context, int studentId) async {
   try {
     Navigator.of(context).push(
@@ -90,7 +101,6 @@ void getDetail(BuildContext context, int studentId) async {
   } catch (e) {
     print("Error getting details: $e");
     await _buildDialog(context, 'Alert', 'Need to login');
-      Provider.of<AuthProvider>(context, listen: false).setLogOut();
+    Provider.of<AuthProvider>(context, listen: false).setLogOut();
   }
-    
-  }
+}

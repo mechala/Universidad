@@ -5,27 +5,34 @@ import 'package:f_202010_provider_get_it/architecture_example/services/student_s
 
 import '../locator.dart';
 import '../models/person.dart';
+
 class CourseDetailModel extends BaseModel {
   Api _api = locator<Api>();
-   StudentService _studentService =locator<StudentService>();
- List<Person> get students => _studentService.students;
+  StudentService _studentService = locator<StudentService>();
+  List<Person> get students => _studentService.students;
   CourseDetail courseDetail;
 
-  Future getCourse(
-    String user, String token, int courseId) async {
-    setState(ViewState.Busy);
-    courseDetail = await _api.getCourse(user, token, courseId);
-    setState(ViewState.Idle);
+  Future getCourse(String user, String token, int courseId) async {
+    try {
+      setState(ViewState.Busy);
+      courseDetail = await _api.getCourse(user, token, courseId);
+      setState(ViewState.Idle);
+    } catch (e) {
+      print('homemodel getCourse ${e.toString()}');
+      setState(ViewState.Idle);
+      return Future.error(e.toString());
+    }
   }
-    Future addStudent(int courseId) async {
+
+  Future addStudent(int courseId) async {
     setState(ViewState.Busy);
-  try {
+    try {
       await _studentService.addStudent(courseId);
       setState(ViewState.Idle);
       return Future.value(true);
     } catch (err) {
       print('homemodel addCourse ${err.toString()}');
-       setState(ViewState.Idle);
+      setState(ViewState.Idle);
       return Future.error(err.toString());
     }
   }

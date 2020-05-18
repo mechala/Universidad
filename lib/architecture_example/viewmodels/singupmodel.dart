@@ -8,12 +8,20 @@ class SingUpModel extends BaseModel {
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   User get user => _authenticationService.user;
- 
-  Future<bool> singUp(String email,String password,String username,String name) async {
+
+  Future<bool> singUp(
+      String email, String password, String username, String name) async {
     setState(ViewState.Busy);
-    var success = await _authenticationService.singUp(email,password,username,name);
-    notifyListeners();
-    setState(ViewState.Idle);
-    return success;
+    try {
+      var success =
+          await _authenticationService.singUp(email, password, username, name);
+      notifyListeners();
+      setState(ViewState.Idle);
+      return success;
+    } catch (e) {
+      print("Error singingUp ${e.toString()}");
+      setState(ViewState.Idle);
+      return Future.error(e.toString());
+    }
   }
 }

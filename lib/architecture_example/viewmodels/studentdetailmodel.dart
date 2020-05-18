@@ -9,10 +9,15 @@ class StudentDetailModel extends BaseModel {
 
   StudentDetail studentDetail;
 
-  Future getStudent(
-    String user, String token, int studentId) async {
+  Future getStudent(String user, String token, int studentId) async {
+    try{
     setState(ViewState.Busy);
     studentDetail = await _api.getStudent(user, token, studentId);
     setState(ViewState.Idle);
+    }catch(e){
+    print("Error getting Student ${e.toString()}");
+    setState(ViewState.Idle);
+    return Future.error(e.toString());
+    }
   }
 }
