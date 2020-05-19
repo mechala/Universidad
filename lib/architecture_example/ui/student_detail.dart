@@ -15,7 +15,7 @@ class StudentDetailView extends StatelessWidget {
         onModelReady: (model) => model.getStudent(
             Provider.of<AuthProvider>(context).username,
             Provider.of<AuthProvider>(context).token,
-            studentId),
+            studentId,context),
         builder: (context, model, child) => Scaffold(
             appBar: AppBar(
               title: Text("Student detail"),

@@ -33,9 +33,10 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
+    StudentsListView(),
     CourseListView(),
     ProfessorsListView(),
-    StudentsListView(),
+    
   ];
 
   void onTabTapped(int index) {
@@ -52,6 +53,8 @@ class _HomeState extends State<Home> {
         onTap: onTabTapped, // new
         currentIndex: _currentIndex, // new
         items: [
+           new BottomNavigationBarItem(
+              icon: Icon(Icons.assignment), title: Text('Students')),
           new BottomNavigationBarItem(
             icon: Icon(Icons.book),
             title: Text('Courses'),
@@ -60,8 +63,7 @@ class _HomeState extends State<Home> {
             icon: Icon(Icons.person),
             title: Text('Professors'),
           ),
-          new BottomNavigationBarItem(
-              icon: Icon(Icons.assignment), title: Text('Students'))
+         
         ],
       ),
     );
@@ -327,6 +329,7 @@ class _ProfessorsListViewState extends State<ProfessorsListView>
       print("Error getting details: $e");
       await _buildDialog(context, 'Alert', 'Need to login');
       Provider.of<AuthProvider>(context, listen: false).setLogOut();
+       Navigator.of(context).pop();
     }
   }
 

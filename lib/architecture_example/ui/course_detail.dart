@@ -1,13 +1,14 @@
 import 'package:f_202010_provider_get_it/architecture_example/base/base_model.dart';
 import 'package:f_202010_provider_get_it/architecture_example/base/base_view.dart';
 import 'package:f_202010_provider_get_it/architecture_example/models/person.dart';
-import 'package:f_202010_provider_get_it/architecture_example/models/professor.dart';
+
 import 'package:f_202010_provider_get_it/architecture_example/ui/components/student_list.dart';
-import 'package:f_202010_provider_get_it/architecture_example/ui/components/person_card.dart';
+
 import 'package:f_202010_provider_get_it/architecture_example/ui/professor_detail.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/auth_provider.dart';
 import 'package:f_202010_provider_get_it/architecture_example/viewmodels/coursedetailmodel.dart';
-import 'package:f_202010_provider_get_it/architecture_example/ui/student_detail.dart';
+import 'package:f_202010_provider_get_it/architecture_example/viewmodels/homemodel.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -170,7 +171,9 @@ class CourseDetailView extends StatelessWidget {
   }
 }
 
+
 Widget floating(BuildContext context, CourseDetailModel model, int courseId) {
+ 
   return FloatingActionButton(
       onPressed: () => _onAdd(context, model, courseId),
       tooltip: 'Add task',
@@ -178,14 +181,13 @@ Widget floating(BuildContext context, CourseDetailModel model, int courseId) {
 }
 
 void _onAdd(BuildContext context, CourseDetailModel model, int courseId) async {
-  print("El id del curso es: $courseId");
   try {
     await model.addStudent(courseId);
   } catch (err) {
     print('upsss ${err.toString()}');
-    // await _buildDialog(context, 'Alert', 'Need to login');
-    //Provider.of<AuthProvider>(context, listen: false).setLogOut();
-    //Navigator.of(context).pop();
+     await _buildDialog(context, 'Alert', 'Need to login');
+    Provider.of<AuthProvider>(context, listen: false).setLogOut();
+    Navigator.of(context).pop();
   }
 }
 
@@ -235,5 +237,6 @@ void getProfesorDetail(BuildContext context, int professorId) async {
     print("Error getting details: $e");
     await _buildDialog(context, 'Alert', 'Need to login');
     Provider.of<AuthProvider>(context, listen: false).setLogOut();
+    Navigator.of(context).pop();
   }
 }

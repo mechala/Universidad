@@ -208,8 +208,10 @@ Future<List<Person>> getProfessors(String username, String token) async {
   }
 
   Future<Person> addStudentService(String username, String token,int courseId) async {
+    print("Username: $username, Toke: $token, courseId: $courseId");
      final http.Response response = await http.post(
       'https://movil-api.herokuapp.com/$username/students',
+
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
          HttpHeaders.authorizationHeader: "Bearer " + token,
@@ -218,8 +220,8 @@ Future<List<Person>> getProfessors(String username, String token) async {
         'courseId':courseId,
       }),
     );
-    print('${response.body}');
-     print('${response.statusCode}');
+    // print('${response.body}');
+    // print('${response.statusCode}');
     if (response.statusCode == 200) {
       return Person.fromJson(json.decode(response.body));
     } else {
@@ -227,6 +229,7 @@ Future<List<Person>> getProfessors(String username, String token) async {
       return Future.error(body['error']);
     }
   }
+
 
   Future<Course> addCourseService(String username, String token) async {
     final http.Response response = await http.post(

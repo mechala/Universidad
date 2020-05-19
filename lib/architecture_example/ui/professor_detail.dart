@@ -16,7 +16,7 @@ class ProfessorDetailView extends StatelessWidget {
         onModelReady: (model) => model.getProfessor(
             Provider.of<AuthProvider>(context).username,
             Provider.of<AuthProvider>(context).token,
-            professorId),
+            professorId,context),
         builder: (context, model, child) => Scaffold(
             appBar: AppBar(
               title: Text("Professor detail"),

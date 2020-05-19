@@ -31,7 +31,7 @@ class CourseDetailModel extends BaseModel {
       setState(ViewState.Idle);
       return Future.value(true);
     } catch (err) {
-      print('homemodel addStudent ${err.toString()}');
+      print('CourseDetailModel addStudent ${err.toString()}');
       setState(ViewState.Idle);
       return Future.error(err.toString());
     }
