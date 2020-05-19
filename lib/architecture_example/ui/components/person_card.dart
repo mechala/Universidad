@@ -23,7 +23,7 @@ class PersonCard extends StatelessWidget {
               color: Colors.redAccent,
             ),
             title: Text(name),
-            subtitle: Text('$userName \n $email'),
+            subtitle: Text('$userName\n$email'),
             isThreeLine: true,
             onTap: getPersonDetail,
           )),
