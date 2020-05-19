@@ -8,6 +8,8 @@ class LoginModel extends BaseModel {
   final AuthenticationService _authenticationService =
       locator<AuthenticationService>();
   User get user => _authenticationService.user;
+
+  
  
   Future<bool> login(String email,String password) async {
     try {

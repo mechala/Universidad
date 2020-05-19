@@ -10,8 +10,19 @@ class LoginView extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   String email;
   String password;
+  bool remember =  false;
+
   @override
   Widget build(BuildContext context) {
+    
+      remember=Provider.of<AuthProvider>(context, listen: false).remember;
+      
+      if(remember){
+
+         email = Provider.of<AuthProvider>(context, listen: false).email;
+      password = Provider.of<AuthProvider>(context, listen: false).password;
+      }
+      print("Se recuerda?: $email");
     return BaseView<LoginModel>(
         builder: (context, model, child) => Scaffold(
             body:
@@ -30,13 +41,12 @@ class LoginView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   TextFormField(
+                                    initialValue: email,
                                       validator: (value) {
                                         if (value.isEmpty) {
                                           return 'Please enter some text';
                                         }
-                                        /* if (value != Provider.of<LoginState>(context).getEmail()) {
-                      return "Usuario errado";
-                } */
+
                                         email = value;
                                         return null;
                                       },
@@ -44,13 +54,12 @@ class LoginView extends StatelessWidget {
                                           hintText: "Correo",
                                           icon: Icon(Icons.mail))),
                                   TextFormField(
+                                    initialValue: password,
                                       validator: (value) {
                                         if (value.isEmpty) {
                                           return 'Please enter some text';
                                         }
-                                        /*  if (value != (Provider.of<LoginState>(context).getPassword())) {
-                      return "Contraseña errada";
-                } */
+
                                         password = value;
                                         return null;
                                       },
@@ -58,6 +67,7 @@ class LoginView extends StatelessWidget {
                                       decoration: InputDecoration(
                                           hintText: "Contraseña",
                                           icon: Icon(Icons.lock))),
+                                  
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 16.0),
@@ -68,17 +78,18 @@ class LoginView extends StatelessWidget {
                                           // otherwise.
                                           if (_formKey.currentState
                                               .validate()) {
-                                            // If the form is valid, display a Snackbar.
-
-                                            var loginSuccess=await model.login(email, password)??false;
+                                            var loginSuccess = await model
+                                                    .login(email, password) ??
+                                                false;
                                             if (loginSuccess) {
-                                              print(
-                                                  'LoginView loginSuccess setting up setLoggedIn ');
+                                              
+                                                  recordatorio(context);
                                               Provider.of<AuthProvider>(context,
                                                       listen: false)
                                                   .setLoggedIn(
                                                       model.user.username,
-                                                      model.user.token);
+                                                      model.user.token,
+                                                      email,password);
                                             }
                                           }
                                         },
@@ -89,8 +100,11 @@ class LoginView extends StatelessWidget {
                                   Center(
                                       child: GestureDetector(
                                     onTap: () {
-                                       Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) => SingUpView()));
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SingUpView()));
                                     },
                                     child: Text(
                                       'Crear usuario',
@@ -129,4 +143,33 @@ class LoginView extends StatelessWidget {
       context: context,
     );
   }
+}
+Future<void> recordatorio(BuildContext context){
+return showDialog(
+    context: context,
+    builder: (BuildContext context){
+        return AlertDialog(
+          title: Text("¿Quiere ser recordado?"),
+          content: Text("Esto le ayudará a ingresar mas rápido a la aplicación"),
+          actions:[
+      FlatButton(
+        child: Text("Recordar"),
+        onPressed: (){
+           Provider.of<AuthProvider>(context, listen: false).setRemember(true);
+           Navigator.of(context).pop();
+        },
+      ),
+      FlatButton(
+        child: Text("No recordar"),
+        onPressed: (){
+           Provider.of<AuthProvider>(context, listen: false).setRemember(false);
+           Navigator.of(context).pop();
+        },)
+    ],
+        );
+    }
+  );
+
+
+
 }

@@ -9,7 +9,7 @@ class AuthenticationService {
   Api _api = locator<Api>();
   User user;
  // StreamController<User> userController = StreamController<User>();
-
+ 
   Future<bool> login(String email, String password) async {
     User fetchedUser = await _api.getUserProfile(email: email, password: password);
 

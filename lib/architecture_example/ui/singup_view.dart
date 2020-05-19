@@ -98,7 +98,7 @@ class SingUpView extends StatelessWidget {
                                                       listen: false)
                                                   .setLoggedIn(
                                                       model.user.username,
-                                                      model.user.token);
+                                                      model.user.token,email,password);
                                             }
                                           }
                                         },
